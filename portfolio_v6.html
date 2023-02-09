@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Portfolio V1</title>
+
+        <!-- add icon link -->
+        <!--<link rel = "icon" href = 
+        "./prati_colour.png" 
+        type = "image/x-icon">-->
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                background-color: green;
+            }
+
+            #canvas {
+                width: 100%;
+                height: 100%; 
+                touch-action: none;
+                background: transparent; 
+                top: 20px;
+                /*background-color: green;*/
+            }
+        </style>
+
+        <!--<script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+        <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>-->
+
+        <script src="babylon.js"></script>
+        <script src="babylon.gui.min.js"></script>
+        <script src="babylon.loaders.js"></script>
+        <script src="https://cdn.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://cdn.babylonjs.com/Oimo.js"></script>
+        
+        <!-- Babylon.js -->
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>-->
+
+
+       
+        <script src="button_adding.js"></script> 
+
+    </head>
+
+   <body>
+    
+
+    <div id='d1' style="top:50px; left:50px; z-index:1">  
+        <canvas id='canvas' touch-action="none">
+              Your browser does not support HTML5 Canvas.
+        </canvas>
+    </div>
+    <!--
+    <canvas id="canvas" touch-action="none">Your browser does not support HTML5 Canvas.</canvas> -->
+    <!-- touch-action="none" for best results from PEP -->
+    <script>
+        var canvas = document.getElementById("canvas");
+
+
+        var startRenderLoop = function (engine, canvas) {
+            engine.runRenderLoop(function () {
+                if (sceneToRender && sceneToRender.activeCamera) {
+                    sceneToRender.render();
+                }
+            });
+        }
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+
+
+        var createScene = async function(){
+        // here the doc for Load function: //doc.babylonjs.com/typedoc/classes/babylon.sceneloader#load
+        //BABYLON.SceneLoader.Load("./", "pf1.babylon", engine, function (scene) {
+
+            var scene = new BABYLON.Scene(engine);
+            scene.enablePhysics(new BABYLON.Vector3(0,-9.81, 0), new BABYLON.OimoJSPlugin());
+            //var scene = (BABYLON.SceneLoader.Load("./", "pf1.babylon", engine, function (scene)
+            
+            
+
+            //LIGHTS ARE NOT IMPORTED. ONLY MESHES
+            const result = await BABYLON.SceneLoader.ImportMeshAsync("", "./", "pf2.babylon", scene);
+            //console.log(result.meshes);
+            var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+            
+
+            //physics- extract relevant data
+            var cube = scene.getMeshByName("Cube");
+            var cube1 = scene.getMeshByName("Cube.001");
+            
+            //var bounds = scene.getMeshByName("Roundcube");
+            var ground =  scene.getMeshByName("Plane");
+            //var wall1 =  scene.getMeshByName("WALL1");
+            //wall1.visibility = 0.5;
+            //var wall2 =  scene.getMeshByName("WALL2");
+
+            //console.log(bounds);
+            
+
+            // Apply the collisions on all meshes
+            
+            result.meshes.forEach(function(m) {
+                m.checkCollisions = true;
+    
+                });
+                
+            
+
+            //THIS WORKS:
+
+            //console.log(newmeshes);
+            //x =  scene.getMeshByName("Plane");
+            //console.log(x);
+            
+            //document.write(scene.meshes[2].checkCollisions)
+            //console.log(scene.meshes[2])
+            
+
+            //Shadows
+            /*scene.meshes.forEach(function(m) {
+                m.castShadows = true;
+                m.receiveShadows = true;
+                //document.write(m);
+                //document.write("\n\n\n");
+                });*/
+            scene.actionManager = new BABYLON.ActionManager(scene);
+            scene.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnKeyUpTrigger,
+                    parameter: 'R'
+                },
+                function () { console.log(camera.getDirection(BABYLON.Vector3.Forward())); }
+                )
+            );
+
+
+
+            
+            //cam stuff
+            //THIS
+            // Need a free camera for collisions
+            //do i want arc rotate camera instead?
+            //var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), scene); //middle one is z up.  //(0, 0.6, 54) for outside main building  
+            //camera.attachControl(canvas, true);
+            var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
+            camera.attachControl(canvas, true);
+
+
+
+            
+            var empty = scene.getMeshByName("Empty");
+            //console.log(empty.position.x)
+            camera.setPosition(new BABYLON.Vector3(empty.position.x, empty.position.z, empty.position.y));
+            //camera.setPosition(new BABYLON.Vector3(0,0,0));
+            
+        
+            camera.upperBetaLimit = (Math.PI / 2) * 0.99;
+
+            //camera.inputs.addMouseWheel();
+
+            
+            // set to orgin for uniform rotatoin
+            camera.setTarget(new BABYLON.Vector3(0,0.66,0)); //sets the point the camera is looking at in the start
+
+            
+            //to set target of arc rotate cam to a specific mesh
+            //camera.target = scene.getMeshByName("Cube");
+            
+
+            
+            camera.keysDown = '83'
+            camera.keysUp = '87'
+            camera.keysLeft = '65'
+            camera.keysRight = '68'
+            //zoom is alt
+            
+
+
+
+
+            //var inputManager = camera.inputs;
+            //disable click and move with pointer
+            //so only WASD active
+            //https://playground.babylonjs.com/#96J37Q 
+            //https://babylonjsguide.github.io/intermediate/Customizing_Inputs didnot use
+            //https://forum.babylonjs.com/t/deactive-some-camera-inputs/33044
+        
+            camera.inputs.attached.pointers.buttons = [];
+            
+            //inputManager.remove(inputManager.attached. )
+
+            camera.minZ = 0.1;
+            camera.angularSpeed = 0.05;
+            //camera.direction = new BABYLON.Vector3(Math.cos(camera.angle), 0, Math.sin(camera.angle));
+            //console.log(camera.speed);
+            
+            
+            camera.fov=1.2; //default little less than 1
+
+            //setting maximunm and minimum camera zoom
+            camera.lowerRadiusLimit = 3;
+            camera.upperRadiusLimit = 6;
+
+            //Prevent too fast zooming
+            //camera.wheelPrecision = 50; 
+
+            //camera.zoomingSensibility = 0.01;
+            //console.log(camera.zoomingSensibility);
+
+            var boundaries = [scene.getMeshByName("wall1"), scene.getMeshByName("wall2"), scene.getMeshByName("wall3"), scene.getMeshByName("wall4")];
+
+            for(var i = 0; i < boundaries.length; i++) {
+                boundaries[i].visibility = 0;
+            }
+
+            
+            var dragableMeshes = []; 
+
+            //array holds all meshes that should be dragable
+            result.meshes.forEach(function(m) {
+                //document.write(m.name);
+                //document.write("\n\n\n");
+                if (m.name.startsWith("Cube")){
+
+                    m.isPickable = true;
+                    dragableMeshes.push(m);
+                    //console.log(m);
+                    //document.write(m.isPickable);
+                }
+                
+            });
+
+            //var dragableMeshes = [scene.getMeshByName("Cube"), scene.getMeshByName("Cube.001"), scene.getMeshByName("Cube.002")];
+            //console.log(dragableMeshes);
+            //attach an own pointerDragBehavoir for every mesh in dragableMeshes-array
+            for(var i = 0; i < dragableMeshes.length; i++) {
+                attachOwnPointerDragBehaviour(dragableMeshes[i]);
+            }
+            
+            //Bounding box info- used to restrict mesh dragging of icons
+            var bbox = ground.getBoundingInfo().boundingBox;
+            console.log(bbox);
+            //ground.showBoundingBox = true;
+
+            //camera.getDirection(BABYLON.Vector3.Forward())
+            function getVector(){
+                //console.log(camera.getDirection(BABYLON.Vector3.Forward()));
+                return camera.getDirection(BABYLON.Vector3.Forward());
+            }
+            //console.log(bbox.maximum.z);
+            
+
+
+            function attachOwnPointerDragBehaviour(mesh){
+                //DRAG BEHAVIOUR
+                //https://playground.babylonjs.com/#YEZPVT 
+                // Create pointerDragBehavior in the desired mode
+                //https://doc.babylonjs.com/features/featuresDeepDive/behaviors/meshBehaviors#pointerdragbehavior
+
+                //to change drag axes
+                //drag everywhere like a heathen savage
+                var pointerDragBehavior = new BABYLON.PointerDragBehavior({});
+                //no x axis
+                //var pointerDragBehavior = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(1,0,0)});
+                
+                //xzy
+
+                //var pointerDragBehavior = new BABYLON.PointerDragBehavior({dragPlaneNormal: getVector()});
+                //pointerDragBehavior.updateDragPlane = false;
+
+                //drag along a single axis
+                //var pointerDragBehavior = new BABYLON.PointerDragBehavior({dragAxis: new BABYLON.Vector3(1,0,0)});
+        
+                
+
+                // If handling drag events manually is desired, set move attached to false
+                pointerDragBehavior.moveAttached = false;
+
+                // Use drag plane in world space sketchy
+                //check true with collisions enabled
+                pointerDragBehavior.useObjectOrientationForDragging = false;
+
+                /*
+                pointerDragBehavior.validateDrag = (targetPosition) => {
+                    console.log("sex");
+                    return !(Math.abs(targetPosition.z) > Math.abs(bbox.maximum.z-0.2)); 
+                    //return !(targetPosition.z > 3);        
+                }*/
+                
+
+                // Listen to drag events
+                pointerDragBehavior.onDragStartObservable.add((event)=>{
+                    //console.log("dragStart");
+                    //console.log(event);
+                })
+                pointerDragBehavior.onDragObservable.add((event)=>{
+                    
+                    
+                    //console.log("drag");
+                    //console.log(event);
+                    
+                    
+                    var finalPOS = pointerDragBehavior.attachedNode.position.add(event.delta);
+
+                    //KEEP ALL ACTIVE HERE AND CHANGE AXIS OUTSIDE
+                    //y checking (object shouldnt dip below horizon)
+                    if (finalPOS.y > 0 && finalPOS.y <4){
+                    pointerDragBehavior.attachedNode.position.y += event.delta.y;
+                    }
+
+                    //Math.abs(bbox.maximum.x)-1
+                    if (Math.abs(finalPOS.x) < 1){
+                        pointerDragBehavior.attachedNode.position.x += event.delta.x;
+                    }
+                    
+                    if (Math.abs(finalPOS.z) < Math.abs(bbox.maximum.z)-1){
+                        pointerDragBehavior.attachedNode.position.z += event.delta.z;
+                    }
+
+                   
+
+                    //mesh.moveWithCollisions(event.delta);
+
+                    
+
+                    //var diff = current.subtract(startingPoint);
+                    //currentMesh.position.addInPlace(diff);
+                
+                })
+                pointerDragBehavior.onDragEndObservable.add((event)=>{
+                    //console.log("dragEnd");
+                    //boodle();
+                    
+                    //console.log(event);
+                })
+                mesh.addBehavior(pointerDragBehavior);
+
+            }
+            
+            makeImposters(dragableMeshes, boundaries);
+
+
+            
+            
+            //var c1 =  scene.getMeshByName("Cube");
+            //attachOwnPointerDragBehaviour(c1);
+            //c1.addBehavior(pointerDragBehavior);
+            
+
+            /*result.meshes.forEach(function(m) {
+                //document.write(m.name);
+                //document.write("\n\n\n");
+                if (m.name.startsWith("Cube")){
+
+                    m.isPickable = true;
+                    m.addBehavior(pointerDragBehavior);
+                    console.log(m);
+                    //document.write(m.isPickable);
+                }
+                
+            });
+            */
+
+
+
+            
+
+
+
+
+
+            //new trying again
+            //dragaround xy plane 
+            //https://playground.babylonjs.com/#7CBW04
+
+            //drag everywhere
+            //https://www.babylonjs-playground.com/#2ILHWS#3
+            //https://doc.babylonjs.com/features/featuresDeepDive/scene/interactWithScenes
+            //https://doc.babylonjs.com/features/featuresDeepDive/mesh/interactions/picking_collisions
+            
+
+            //PHYSICS
+            function makeImposters(dragableMeshes, boundaries){
+            //write separate function to make imposters of peripheral objects
+            ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);
+
+            //wall1.physicsImpostor = new BABYLON.PhysicsImpostor(wall1, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);
+
+            for(var i = 0; i < boundaries.length; i++) {
+                boundaries[i].physicsImpostor = new BABYLON.PhysicsImpostor(boundaries[i], BABYLON.PhysicsImpostor.BoxImposter, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);
+            }
+
+            //wall2.physicsImpostor = new BABYLON.PhysicsImpostor(wall2, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);
+
+
+            //bounds.physicsImpostor = new BABYLON.PhysicsImpostor(bounds, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);
+
+
+            for(var i = 0; i < dragableMeshes.length; i++) {
+                dragableMeshes[i].physicsImpostor = new BABYLON.PhysicsImpostor(dragableMeshes[i], BABYLON.PhysicsImpostor.BoxImposter, { mass: 2, friction: 0.2, restitution: 0.3 }, scene);
+            }
+
+            
+
+           
+            }
+            
+            //console.log(camera.absoluteRotation);
+
+            //gravity
+            
+            const assumedFramesPerSecond = 60;
+            const earthGravity = -9.81;
+            scene.gravity = new BABYLON.Vector3(0, earthGravity / assumedFramesPerSecond, 0);
+            camera.applyGravity = true;
+            
+            
+
+
+            //Set the ellipsoid around the camera (e.g. your player's size)
+            camera.ellipsoid = new BABYLON.Vector3(0.3, 0.6, 0.4); //0.3, 0.6, 0.4
+
+            
+            //scene.clearColor = new BABYLON.Color3(0, 1, 0);
+            //scene.clearColor = new BABYLON.Color4(0,0,0,0.0000000000000001);
+            scene.clearColor = new BABYLON.Color4(0,0,0,0.0);
+            // Enable Collisions
+            scene.collisionsEnabled = true;
+            camera.checkCollisions = true;
+            scene.shadowsEnabled = true;
+
+
+            return scene;
+
+        };
+
+        var make_button = function(mesh, link, scene){
+            mesh.actionManager = new BABYLON.ActionManager(scene);
+            mesh.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction(
+                BABYLON.ActionManager.OnPickTrigger, //OnDoublePickTrigger //OnPickTrigger
+                function NewTab() {
+                    
+                    window.open(
+                      link, "_blank"); //https://zoom.us/
+                }
+            )
+        );
+        }
+
+        
+        /*window.scene = createScene();
+
+            engine.runRenderLoop(function () {
+            scene.render();
+            });
+
+            
+
+            window.addEventListener("resize", function () {
+            engine.resize();
+            });*/
+
+        window.initFunction = async function() {
+            await Ammo();
+                    
+            var asyncEngineCreation = async function() {
+                try {
+                return createDefaultEngine();
+                } catch(e) {
+                console.log("the available createEngine function failed. Creating the default engine instead");
+                return createDefaultEngine();
+                }
+            }
+
+            window.engine = await asyncEngineCreation();
+            if (!engine) throw 'engine should not be null.';
+            startRenderLoop(engine, canvas);
+            
+            window.scene = createScene();
+        };
+        initFunction().then(() => {scene.then(returnedScene => { sceneToRender = returnedScene; });
+    });
+
+    // Resize
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+
+        
+        
+    </script>
+
+   </body>
+
+</html>
