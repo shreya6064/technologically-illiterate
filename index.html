@@ -179,8 +179,14 @@
             //camera.setPosition(new BABYLON.Vector3(0,0,0));
             
         
-            camera.upperBetaLimit = (Math.PI / 2) * 0.99;
+            camera.upperBetaLimit = (Math.PI / 2); //* 0.99; //don't dip below horizon
+            camera.lowerBetaLimit = Math.PI/4;//-(Math.PI / 2); //full rotate upside down -90, 0 facing straight down
+            camera.upperAlphaLimit = (3.142/3); //right angle limit
+            camera.lowerAlphaLimit = -(3.142/3); //left angle limit
 
+            //beta is up view down view
+            //camera.upperBetaLimit = 3.142/12;
+            //camera.lowerBetaLimit = 3.142/12;
             //camera.inputs.addMouseWheel();
 
             
@@ -210,7 +216,7 @@
             //https://babylonjsguide.github.io/intermediate/Customizing_Inputs didnot use
             //https://forum.babylonjs.com/t/deactive-some-camera-inputs/33044
         
-            camera.inputs.attached.pointers.buttons = [];
+            //camera.inputs.attached.pointers.buttons = [];
             
             //inputManager.remove(inputManager.attached. )
 
