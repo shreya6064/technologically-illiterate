@@ -17,7 +17,7 @@
                 height: 100%;
                 margin: 0;
                 padding: 0;
-                background-color: green;
+                background-color: rgb(232, 232, 232);
             }
 
             #canvas {
@@ -25,7 +25,7 @@
                 height: 100%; 
                 touch-action: none;
                 background: transparent; 
-                top: 20px;
+                
                 /*background-color: green;*/
             }
         </style>
@@ -66,13 +66,13 @@
    <body>
     
 
-    <div id='d1' style="top:50px; left:50px; z-index:1">  
+    <!--<div id='d1' style="top:50px; left:50px; z-index:1">  
         <canvas id='canvas' touch-action="none">
               Your browser does not support HTML5 Canvas.
         </canvas>
-    </div>
-    <!--
-    <canvas id="canvas" touch-action="none">Your browser does not support HTML5 Canvas.</canvas> -->
+    </div>-->
+    
+    <canvas id="canvas" touch-action="none">Your browser does not support HTML5 Canvas.</canvas> 
     <!-- touch-action="none" for best results from PEP -->
     <script>
         var canvas = document.getElementById("canvas");
@@ -230,7 +230,7 @@
 
             //setting maximunm and minimum camera zoom
             camera.lowerRadiusLimit = 3;
-            camera.upperRadiusLimit = 6;
+            camera.upperRadiusLimit = 5;
 
             //Prevent too fast zooming
             //camera.wheelPrecision = 50; 
@@ -270,7 +270,7 @@
             
             //Bounding box info- used to restrict mesh dragging of icons
             var bbox = ground.getBoundingInfo().boundingBox;
-            console.log(bbox);
+            //console.log(bbox);
             //ground.showBoundingBox = true;
 
             //camera.getDirection(BABYLON.Vector3.Forward())
@@ -392,14 +392,6 @@
             });
             */
 
-
-
-            
-
-
-
-
-
             //new trying again
             //dragaround xy plane 
             //https://playground.babylonjs.com/#7CBW04
@@ -452,15 +444,14 @@
             camera.ellipsoid = new BABYLON.Vector3(0.3, 0.6, 0.4); //0.3, 0.6, 0.4
 
             
-            //scene.clearColor = new BABYLON.Color3(0, 1, 0);
-            //scene.clearColor = new BABYLON.Color4(0,0,0,0.0000000000000001);
+            
             scene.clearColor = new BABYLON.Color4(0,0,0,0.0);
             // Enable Collisions
             scene.collisionsEnabled = true;
             camera.checkCollisions = true;
             scene.shadowsEnabled = true;
 
-
+            
             return scene;
 
         };
