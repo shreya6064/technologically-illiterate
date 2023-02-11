@@ -231,7 +231,9 @@
             //setting maximunm and minimum camera zoom
             camera.lowerRadiusLimit = 3;
             camera.upperRadiusLimit = 5;
-
+            
+            //https://forum.babylonjs.com/t/disabling-panning-on-multitouch-event-leads-to-wrong-behaviour/16064
+            camera.panningSensibility = 0;
             //Prevent too fast zooming
             //camera.wheelPrecision = 50; 
 
